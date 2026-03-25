@@ -25,6 +25,7 @@ const baseFields = [
   }),
 
   new FieldDesc<Selection>("selection", {
+    // 构建初始选择器Selection
     init(config, instance) { return config.selection || Selection.atStart(instance.doc) },
     apply(tr) { return tr.selection }
   }),
@@ -185,6 +186,7 @@ export class EditorState {
   static create(config: EditorStateConfig) {
     let $config = new Configuration(config.doc ? config.doc.type.schema : config.schema!, config.plugins)
     let instance = new EditorState($config)
+    // 初始化默认字段，如果有取传进来的值、没有就用默认值
     for (let i = 0; i < $config.fields.length; i++)
       (instance as any)[$config.fields[i].name] = $config.fields[i].init(config, instance)
     return instance
