@@ -56,6 +56,7 @@ class Configuration {
       this.plugins.push(plugin)
       this.pluginsByKey[plugin.key] = plugin
       if (plugin.spec.state)
+        // 如果插件定义了state字段，将state添加到fields中(挂载到state上)
         this.fields.push(new FieldDesc<any>(plugin.key, plugin.spec.state, plugin))
     })
   }
@@ -198,6 +199,7 @@ export class EditorState {
   /// dropped, and those that are new are initialized using their
   /// [`init`](#state.StateField.init) method, passing in the new
   /// configuration object..
+  // 重新传递plugins进来，构建新的Configuration；plugin上申明的state会挂载到editor.state上
   reconfigure(config: {
     /// New set of active plugins.
     plugins?: readonly Plugin[]    
@@ -206,6 +208,7 @@ export class EditorState {
     let fields = $config.fields, instance = new EditorState($config)
     for (let i = 0; i < fields.length; i++) {
       let name = fields[i].name
+      // 如果state本身声明了这个字段，就用它的值；否则就调用filed的init方法初始化(代表是Plugin,调用plugin的state.init)；这样通过editor.state[name]就能访问到plugin的state
       ;(instance as any)[name] = this.hasOwnProperty(name) ? (this as any)[name] : fields[i].init(config, instance)
     }
     return instance
