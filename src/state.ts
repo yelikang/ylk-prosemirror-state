@@ -175,6 +175,7 @@ export class EditorState {
     let newInstance = new EditorState(this.config), fields = this.config.fields
     for (let i = 0; i < fields.length; i++) {
       let field = fields[i]
+      // 调用插件apply，更新state上该插件自定的的state
       ;(newInstance as any)[field.name] = field.apply(tr, (this as any)[field.name], this, newInstance)
     }
     return newInstance
